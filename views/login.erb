@@ -1,0 +1,52 @@
+<h1>Existing User Login</h1>
+
+<form action="/login" method="POST">
+  <p>
+  <label>Email : </label>
+  <input type="text" name="email" />
+  </p>
+
+  <p>
+  <label>Password :</label>
+  <input type="password" name="password" />
+  </p>
+
+  <input type="submit" value="Sign In">
+</form>
+
+<h1>New User Signup</h1>
+
+<% unless @user.errors.full_messages.empty? %>
+  <% @user.errors.full_messages.each do |message| %>
+    <%= message %><br />
+  <% end %>
+<% end %>
+<form action="/users/create" method="POST">
+  <p>
+  <label>Email : </label>
+  <input type="text" name="user[email]" />
+  </p>
+
+  <p>
+  <label>First Name : </label>
+  <input type="text" name="user[first_name]" />
+  </p>
+
+  <p>
+  <label>Last Name : </label>
+  <input type="text" name="user[last_name]" />
+  </p>
+
+  <p>
+  <label>Password :</label>
+  <input type="password" name="user[password]" />
+  </p>
+
+  <p>
+  <label>Confirm Password :</label>
+  <input type="password" name="user[password_confirmation]" />
+  </p>
+  <input type="submit" value="Sign In">
+</form>
+
+

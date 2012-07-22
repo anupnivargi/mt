@@ -1,0 +1,39 @@
+<% unless @entry.errors.full_messages.empty? %>
+  <% @entry.errors.full_messages.each do |message| %>
+    <%= message %>
+  <% end %>
+<% end %>
+<form action="/" method="POST">
+
+  <p>
+  <label>Particular</label><input type="text" name="entry[particular]" />
+  </p>
+
+  <p>
+  <label>Location</label><input type="text" name="entry[location]" />
+  </p>
+
+  <p>
+  <label>Amount</label>
+  <input type="text" name="entry[amount]" />
+  </p>
+
+  <input type="submit" value="Post" />
+
+</form>
+
+<table cellpadding="20" cellspacing="10">
+  <tr>
+    <th>Particular</th>
+    <th>Location</th>
+    <th>Amount</th>
+  </tr>
+
+  <% @entries.each do |entry| %>
+    <tr>
+      <td><%= entry.particular %></td>
+      <td><%= entry.location %></td>
+      <td><%= entry.amount %></td>
+    </tr>
+  <% end %>
+</table>
