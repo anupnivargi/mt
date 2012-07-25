@@ -25,11 +25,11 @@ class User
   attr_accessor :password, :password_confirmation
 
   property :id, Serial
-  property :email, String
-  property :first_name, String
-  property :last_name, String
-  property :password_salt, String
-  property :password_hash, String
+  property :email, String, length: 50
+  property :first_name, String, length: 50
+  property :last_name, String, length: 50
+  property :password_salt, String, length: 100
+  property :password_hash, String, length: 100
 
   has n, :entries
 
@@ -65,9 +65,10 @@ class Entry
   include DataMapper::Resource
 
   property :id, Serial
-  property :particular, String
-  property :location, String
+  property :particular, String, length: 140
+  property :location, String, length: 50
   property :amount, Float
+  property :payment_mode, String, length: 1
   property :spent_on, DateTime
   property :created_at, DateTime
   property :updated_at, DateTime
@@ -132,7 +133,6 @@ end
 
 post "/users/create" do
   @user = User.new(params[:user])
-  # @user.raise_on_save_failure = true
   if @user.save
     session[:user_id] = @user.id
     redirect "/"
