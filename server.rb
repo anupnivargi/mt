@@ -112,6 +112,16 @@ post "/" do
   end
 end
 
+get "/delete/:id" do
+  @entry = current_user.entries.first(params[:id])
+  if @entry.destroy
+    flash[:notice] = "Deleted"
+  else
+    flash[:alert] = "Failed to Delete"
+  end
+  redirect "/"
+end
+
 get "/login" do
   @user = User.new
   erb :login
@@ -122,6 +132,7 @@ post "/login" do
     session[:user_id] = user.id
     redirect "/"
   else
+    flash[:alert] = "Email or Password Incorrect"
     redirect "/login"
   end
 end

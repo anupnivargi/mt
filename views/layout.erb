@@ -1,37 +1,47 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>Money Tracker</title>
-    <style>
-      *{
-        margin: 0;
-        padding: 0;
-      }
-      body{
-        background-image: url("/img/paper.jpg");
-        font-family:Monospace;
-        font-size: 120%;
-      }
-
-      label{
-        margin: 1px;
-      }
-      input{
-        border: 0px;
-        font-family: inherit;
-        margin: 10px;
-      }
-    </style>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="/css/application.css" rel="stylesheet" type="text/css" media="screen" />
   </head>
   <body>
-    <div id="content">
-      <div id="messages">
-        <% if !flash[:notice].nil? %>
-          <%= flash[:notice] %>
-        <% elsif !flash[:alert].nil? %>
-        <%= flash[:alert]%>
-      <% end %>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/"> Money Tracker</a>
+          <ul class="nav">
+            <li><a href="/">Help</a></li>
+            <li><a href="/">About</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <%= yield %>
-  </div>
-</body>
+    <div class="container">
+      <div class="messages">
+        <% if !flash[:notice].nil? %>
+          <div class="alert alert-success alert-block">
+            <button class="close" data-dismiss="alert">×</button>
+            <h4 class="alert-heading">Success!</h4>
+            <%= flash[:notice] %>
+          </div>
+        <% elsif !flash[:alert].nil? %>
+          <div class="alert alert-error alert-block">
+            <button class="close" data-dismiss="alert">×</button>
+            <h4 class="alert-heading">Error!</h4>
+            <%= flash[:alert]%>
+          </div>
+        <% end %>
+      </div>
+      <div class="row">
+        <div class="span2">&nbsp;</div>
+        <div class="span8">
+          <%= yield %>
+        </div>
+        <div class="span2">&nbsp;</div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  </body>
 </html>

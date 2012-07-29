@@ -1,0 +1,13 @@
+body { 
+  padding-top: 60px; 
+}
+
+.navbar-inner .container { 
+  padding-left: 250px;
+  padding-right: 250px;
+}
+
+
+.navbar-inner .container .brand{ 
+  width: 650px;
+}

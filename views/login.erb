@@ -1,20 +1,15 @@
-<h1>Existing User Login</h1>
-
 <form action="/login" method="POST">
-  <p>
-  <label>Email : </label>
-  <input type="text" name="email" />
-  </p>
+  <fieldset>
+    <legend>Sign In</legend>
+    <label>Email : </label>
+    <input type="text" name="email" />
 
-  <p>
-  <label>Password :</label>
-  <input type="password" name="password" />
-  </p>
-
-  <input type="submit" value="Sign In">
+    <label>Password :</label>
+    <input type="password" name="password" />
+    <br />
+    <input type="submit" value="Sign In" class="btn">
+  </fieldset>
 </form>
-
-<h1>New User Signup</h1>
 
 <% unless @user.errors.full_messages.empty? %>
   <% @user.errors.full_messages.each do |message| %>
@@ -22,31 +17,24 @@
   <% end %>
 <% end %>
 <form action="/users/create" method="POST">
-  <p>
-  <label>Email : </label>
-  <input type="text" name="user[email]" />
-  </p>
+  <fieldset>
+    <legend>Sign Up</legend>
+    <label>Email : </label>
+    <input type="text" name="user[email]" />
 
-  <p>
-  <label>First Name : </label>
-  <input type="text" name="user[first_name]" />
-  </p>
+    <label>First Name : </label>
+    <input type="text" name="user[first_name]" />
 
-  <p>
-  <label>Last Name : </label>
-  <input type="text" name="user[last_name]" />
-  </p>
+    <label>Last Name : </label>
+    <input type="text" name="user[last_name]" />
 
-  <p>
-  <label>Password :</label>
-  <input type="password" name="user[password]" />
-  </p>
+    <label>Password :</label>
+    <input type="password" name="user[password]" />
 
-  <p>
-  <label>Confirm Password :</label>
-  <input type="password" name="user[password_confirmation]" />
-  </p>
-  <input type="submit" value="Sign In">
+    <label>Confirm Password :</label>
+    <input type="password" name="user[password_confirmation]" />
+    <br />
+    <input type="submit" value="Sign Up" class="btn">
+  </fieldset>
 </form>
-
 
