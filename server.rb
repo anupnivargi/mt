@@ -96,7 +96,7 @@ end
 
 get "/" do
   @entry = Entry.new
-  @entries = current_user.entries
+  @entries = Entry.all(:order => [:updated_at.desc]).group_by{ |rec| rec.updated_at.strftime('%B %Y') }
   erb :index
 end
 
