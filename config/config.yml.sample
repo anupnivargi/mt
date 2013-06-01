@@ -1,0 +1,9 @@
+development:
+  client_id: "client_id_dev"
+  client_secret: "client_secret_dev"
+
+production:
+  client_id: "client_id_prod"
+  client_secret: "client_secret_prod"
+
+

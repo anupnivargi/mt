@@ -12,8 +12,12 @@
         <div class="container">
           <a class="brand" href="/"> Money Tracker</a>
           <ul class="nav">
-            <li><a href="/">Help</a></li>
-            <li><a href="/">About</a></li>
+            <% unless current_user %>
+              <li><a href="/auth/google_oauth2"><strong>Google Login</strong></a></li>
+            <% else %>
+              <li><a href="/"><strong><%= current_user.full_name %></strong></a></li>
+              <li><a href="/logout">Logout</a></li>
+            <% end %>
           </ul>
         </div>
       </div>

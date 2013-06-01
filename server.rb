@@ -1,13 +1,7 @@
-require "sinatra"
-require "dm-core"
-require "dm-timestamps"
-require "dm-migrations"
-require "dm-validations"
-require "rack-flash"
-require "bcrypt"
+require "bundler"
+Bundler.require :default, ENV['RACK_ENV']
 
 enable :sessions
-
 use Rack::Flash
 
 configure :development do
@@ -25,38 +19,29 @@ class User
   attr_accessor :password, :password_confirmation
 
   property :id, Serial
+  property :uid, String, length: 50
+  property :provider, String, length: 10
   property :email, String, length: 50
   property :first_name, String, length: 50
   property :last_name, String, length: 50
-  property :password_salt, String, length: 100
-  property :password_hash, String, length: 100
 
   has n, :entries
 
-  validates_presence_of :email, :first_name, :last_name
+  validates_presence_of :uid, :email, :first_name, :last_name
 
-  validates_confirmation_of :password
+  validates_uniqueness_of :uid, :email
 
-  validates_presence_of :password, :if => :new?
-
-  validates_uniqueness_of :email
-
-  before :save, :encrypt_password
-
-  def self.authenticate(email, clear_password)
-    user = User.first(:email => email)
-    if user && user.password_hash == BCrypt::Engine.hash_secret(clear_password, user.password_salt)
-      user
-    else
-      nil
-    end
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
-  def encrypt_password
-    if !password.nil?
-      self.password_salt = BCrypt::Engine.generate_salt
-      self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
+  def self.authenticate(omniauth)
+    user = User.first(uid: omniauth["uid"])
+    unless user
+      user = User.new(uid: omniauth["uid"], email: omniauth["info"]["email"], first_name: omniauth["info"]["first_name"], last_name: omniauth["info"]["last_name"])
+      user.save!
     end
+    user
   end
 
 end
@@ -79,35 +64,37 @@ class Entry
 
   validates_numericality_of :amount
 
+  def amount=(amt)
+    self[:amount] = amt.to_f if amt.to_f.to_s == amt || amt.to_i.to_s == amt
+  end
+
 end
 
 DataMapper.auto_upgrade!
 
 before do
-  $DEBUG = false
-  unless ['/login', "/users/create"].include?(action)
+  # $DEBUG = false
+  unless ['/login', "/auth/google_oauth2/callback"].include?(action)
     unless authenticated?
-      flash[:alert] = "Please Login or Sign Up"
       redirect "/login"
     end
   end
 end
 
-
 get "/" do
   @entry = Entry.new
-  @entries = current_user.entries.all(:order => [:updated_at.desc]).group_by{ |rec| rec.updated_at.strftime('%B %Y') }
+  @entries = current_user.entries.all(:order => [:updated_at.desc], :limit => 100).group_by{ |rec| rec.updated_at.strftime('%B %Y') }
   erb :index
 end
 
 post "/" do
-  @entry = Entry.new(params[:entry])
+  @entry = Entry.new(params["entry"])
   @entry.user_id = current_user.id
   if @entry.save
     flash[:notice] = "Entry added successfully"
     redirect "/"
   else
-    @entries = current_user.entries
+    @entries = current_user.entries.all(:order => [:updated_at.desc]).group_by{ |rec| rec.updated_at.strftime('%B %Y') }
     erb :index
   end
 end
@@ -123,18 +110,20 @@ get "/delete/:id" do
 end
 
 get "/login" do
-  @user = User.new
   erb :login
 end
 
-post "/login" do
-  if user = User.authenticate(params[:email], params[:password])
+get '/auth/:provider/callback' do
+  if user = User.authenticate(request.env['omniauth.auth'])
     session[:user_id] = user.id
     redirect "/"
   else
-    flash[:alert] = "Email or Password Incorrect"
     redirect "/login"
   end
+end
+
+get '/auth/failure' do
+  redirect "/"
 end
 
 get "/logout" do
@@ -142,15 +131,6 @@ get "/logout" do
   redirect "/login"
 end
 
-post "/users/create" do
-  @user = User.new(params[:user])
-  if @user.save
-    session[:user_id] = @user.id
-    redirect "/"
-  else
-    erb :login
-  end
-end
 
 helpers do
 
