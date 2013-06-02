@@ -1,7 +1,11 @@
 require "yaml"
 require "./server"
 
-$config = YAML.load_file("config/config.yml")[ENV['RACK_ENV']]
+if ENV['RACK_ENV'] == "development"
+  $config = YAML.load_file("config/config.yml")[ENV['RACK_ENV']]
+else
+  $config = {'client_id' => ENV['GOOGLE_CLIENT_ID'], 'client_secret' => ENV['GOOGLE_CLIENT_SECRET']}
+end
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
