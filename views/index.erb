@@ -1,42 +1,43 @@
-<%# <% unless @entry.errors.full_messages.empty? %>
-  <%#   <% @entry.errors.full_messages.each do |message| %>
-    <%#     <%= message %>
-    <%#   <% end %>
-  <%# end %>
-  <form action="/" method="POST" class="form-inline">
-    <fieldset class="control-group <%= @entry.errors.full_messages.empty? ? '' : 'error' %>">
-      <div class="input-prepend">
-        <span class="add-on"><i class="icon-tasks"></i></span><input type="text" name="entry[particular]" placeholder="Particular"/>
-      </div>
+<form action="/" method="POST" class="form-inline">
+  <fieldset class="control-group <%= @entry.errors.full_messages.empty? ? '' : 'error' %>" style="text-align:center">
+    <div class="input-prepend">
+      <span class="add-on"><i class="icon-tasks"></i></span><input type="text" name="entry[particular]" placeholder="Particular"/>
+    </div>
 
-      <div class="input-prepend">
-        <span class="add-on"><i class="icon-map-marker"></i></span><input type="text" name="entry[location]" placeholder="Location" />
-      </div>
+    <div class="input-prepend">
+      <span class="add-on"><i class="icon-map-marker"></i></span><input type="text" name="entry[location]" placeholder="Location" />
+    </div>
 
-      <div class="input-prepend">
-        <span class="add-on">&#8377;</span><input type="text" name="entry[amount]" maxlength="6" placeholder="Amount" class="span1">
-      </div>
+    <div class="input-prepend">
+      <span class="add-on">&#8377;</span><input type="text" name="entry[amount]" maxlength="6" placeholder="Amount" class="span1">
+    </div>
 
-      <button type="submit" class="btn btn-primary btn-small">Submit</button>
-    </fieldset>
-  </form>
+    <button type="submit" class="btn btn-primary btn-small">Submit</button>
+  </fieldset>
+</form>
 
-  <% @entries.each do |month, records| %>
-    <h5><%= month %></h5>
-    <table cellpadding="20" cellspacing="10" class="table table-striped">
+<% @entries.each do |month, records| %>
+  <h4><%= month %></h4>
+  <table class="table table-bordered table-hover">
+    <tr>
+      <th style="width:35%">Particular</th>
+      <th style="width:35%">Location</th>
+      <th style="width:15%">Amount</th>
+      <th style="width:10%">Action</th>
+    </tr>
+    <% records.each do |record| %>
       <tr>
-        <th>Particular</th>
-        <th>Location</th>
-        <th>Amount</th>
-        <th>Action</th>
+        <td><%= record.particular %></td>
+        <td><%= record.location %></td>
+        <td><%= record.amount %></td>
+        <td><a href="/delete/<%= record.id %>"><i class="icon-trash"></i></a><!--<a href="#"><i class="icon-edit"></i></a>--></td>
       </tr>
-      <% records.each do |record| %>
-        <tr>
-          <td><%= record.particular %></td>
-          <td><%= record.location %></td>
-          <td><%= record.amount %></td>
-          <td><a href="/delete/<%= record.id %>"><i class="icon-trash"></i></a></td>
-        </tr>
-      <% end %>
-    </table>
-  <% end %>
+    <% end %>
+    <tr class="info">
+      <td><strong>Total</strong></td>
+      <td></td>
+      <td><strong><%= @total %></strong></td>
+      <td></td>
+    </tr>
+  </table>
+<% end %>

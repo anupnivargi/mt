@@ -68,6 +68,10 @@ class Entry
     self[:amount] = amt.to_f if amt.to_f.to_s == amt || amt.to_i.to_s == amt
   end
 
+  def self.total_amount(entries)
+    entries.inject(0){|r,e| r += e.amount}
+  end
+
 end
 
 DataMapper.auto_upgrade!
@@ -83,7 +87,11 @@ end
 
 get "/" do
   @entry = Entry.new
-  @entries = current_user.entries.all(:order => [:updated_at.desc], :limit => 100).group_by{ |rec| rec.updated_at.strftime('%B %Y') }
+  time = Time.now
+  start_date = Date.new(time.year, time.month)
+  end_date = Date.new(time.year, time.month, -1)
+  @entries = current_user.entries.all(:created_at => (start_date..end_date), :order => [:created_at.desc] ).group_by{ |rec| rec.updated_at.strftime('%B %Y') }
+  @total = Entry.total_amount(@entries.values.first) unless @entries.empty?
   erb :index
 end
 
